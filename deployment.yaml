@@ -2,8 +2,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: php-fpm
+  labels:
+    app: tipl
+    tier: backend
 spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tipl
+      tier: backend
   template:
+    metadata:
+      labels:
+        app: tipl
+        tier: backend
     spec:
       initContainers:
       - name: init-storage
@@ -40,8 +52,20 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx
+  labels:
+    app: tipl
+    tier: frontend
 spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tipl
+      tier: frontend
   template:
+    metadata:
+      labels:
+        app: tipl
+        tier: frontend
     spec:
       containers:
       - name: nginx
