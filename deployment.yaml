@@ -15,7 +15,7 @@ spec:
 
       containers:
       - name: php-fpm
-        image: tipl-php:v1
+        image: cloudsihmar/tipl-php:v1
         ports:
         - containerPort: 9000
         volumeMounts:
@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: tipl-nginx:v1
+        image: cloudsihmar/tipl-nginx:v2
         ports:
         - containerPort: 80
         volumeMounts:
