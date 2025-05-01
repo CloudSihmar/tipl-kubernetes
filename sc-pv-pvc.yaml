@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: tipl-storage-pv
 spec:
+  storageClassName: default
   capacity:
     storage: 10Gi
   accessModes:
@@ -18,6 +19,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: tipl-storage-pvc
 spec:
+  storageClassName: default
   accessModes:
     - ReadWriteMany
   resources:
