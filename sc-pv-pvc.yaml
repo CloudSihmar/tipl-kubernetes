@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tipl-storage-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: tipl-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/data/tipl-storage"
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tipl-storage-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: tipl-storage
+  resources:
+    requests:
+      storage: 10Gi
