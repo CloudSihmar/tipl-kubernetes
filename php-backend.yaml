@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-fpm
+  labels:
+    app: tipl
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tipl
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: tipl
+        tier: backend
+    spec:
+      initContainers:
+      - name: init-storage
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p \
+            /storage/app \
+            /storage/framework/cache \
+            /storage/framework/sessions \
+            /storage/framework/views \
+            /storage/logs \
+            /bootstrap/cache && \
+          chown -R 33:33 /storage /bootstrap
+        volumeMounts:
+        - name: storage
+          mountPath: /storage
+        - name: storage
+          mountPath: /bootstrap
+          subPath: bootstrap-cache
+
+      containers:
+      - name: php-fpm
+        image: cloudsihmar/tipl-backend-php:v1
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: php-config
+          mountPath: /usr/local/etc/php/conf.d/local.ini
+          subPath: local.ini
+        - name: storage
+          mountPath: /var/www/storage   
+        - name: storage
+          mountPath: /var/www/bootstrap/cache
+          subPath: bootstrap-cache
+      volumes:
+      - name: php-config
+        configMap:
+          name: php-config
+      - name: storage
+        persistentVolumeClaim:
+          claimName: tipl-storage-pvc
