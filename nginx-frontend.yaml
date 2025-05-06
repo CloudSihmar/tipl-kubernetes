@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: tipl
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: tipl
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: tipl
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: cloudsihmar/tipl-nginx:v2
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-conf-d
+          mountPath: /etc/nginx/conf.d/
+        - name: nginx-cache
+          mountPath: /var/cache/nginx
+        - name: nginx-logs
+          mountPath: /var/log/nginx
+        - name: storage
+          mountPath: /var/www/public/storage
+          subPath: storage/app/public
+          readOnly: true
+      volumes:
+      - name: nginx-conf-d
+        configMap:
+          name: nginx-conf-d
+      - name: nginx-cache
+        emptyDir: {}
+      - name: nginx-logs
+        emptyDir: {}
+      - name: storage
+        persistentVolumeClaim:
+          claimName: tipl-storage-pvc
+          readOnly: true
